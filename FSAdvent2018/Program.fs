@@ -1,10 +1,10 @@
 ﻿// Learn more about F# at http://fsharp.org
 
-open FSAdvent2018.Day4
+open FSAdvent2018.Day7
 
 [<EntryPoint>]
 let main argv =
     let dataDir = "/Users/matthewgregg/Code/FSAdvent2018/data/"
-    let file = "day4.dat"
-    Day4 (dataDir + file)
+    let file = "day7.dat"
+    Day7 (dataDir + file)
     0 // return an integer exit code
