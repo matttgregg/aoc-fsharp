@@ -35,7 +35,7 @@ let allAvailable alreadyDone rules =
 let rec runTasks rules (alreadyDone:char list) =
     let already = Set.ofList alreadyDone
     let available = allAvailable already rules
-    if (Seq.length available) = 0 then (alreadyDone |> List.rev |> List.map string |> String.concat "")
+    if (Seq.isEmpty available) then (alreadyDone |> List.rev |> List.map string |> String.concat "")
     else
         let next = Seq.head available
         runTasks rules (next :: alreadyDone)
@@ -131,6 +131,23 @@ let rec runAll time rules workers =
         | None -> newWorkers
         | Some t -> runAll t rules newWorkers
 
+let runningAt time worker = 
+    let task = 
+      worker.Orders 
+      |> List.tryFind (fun o -> o.Start <= time && o.End > time)
+    match task with 
+    | None -> '.'
+    | Some {Task=t} -> t
+
+let rowFor workers t =
+    let workerPart =
+      workers 
+      |> List.map (runningAt t)
+      |> List.map string
+      |> String.concat " "
+    sprintf "%d\t%s" t workerPart
+    
+
 let Day7 file =
     let rules = File.ReadLines file |> Seq.map (run pRule) |> Seq.choose justRule
     printfn "Day7!"
@@ -143,7 +160,10 @@ let Day7 file =
     let gang = makeWorkers 5
     let finishedGang = (runAll 0 rules gang)
     printfn "Completed Gang: %A" finishedGang
-    printfn "Finished at %d" (finishedAt finishedGang)
+    let endTime = finishedAt finishedGang
+    let byMinute = [0..endTime] |> List.map (rowFor finishedGang) |> String.concat "\n"
+    printfn "%s" byMinute 
+    printfn "Finished at %d" endTime
 
 
 
