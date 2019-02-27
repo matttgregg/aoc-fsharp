@@ -11,9 +11,9 @@ type node = {children:node list; meta:int list; cchildren:int; cmeta:int}
 type readState = {nodes:node list; remaining:int list }
 
 let readHeader data =
-    let [c;m] = List.take 2 data
-    let rest = List.skip 2 data
-    ({cchildren = c; cmeta = m; children = []; meta = []}, rest)
+    match data with
+    | c :: m :: rest -> ({cchildren = c; cmeta = m; children = []; meta = []}, rest)
+    | _ -> ({cchildren = 0; cmeta = 0; children = []; meta = []}, data)
 
 let needsRead state =
     match state.nodes with
