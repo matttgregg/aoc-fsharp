@@ -56,20 +56,27 @@ let evolve (Pots (offset, pots)) (producers:Set<int>) =
             let produced = Set.contains pattern producers
             (produced::collected, List.skip 1 rest) 
     let (fPots, _) = ePots |> List.fold acc ([], ePots)
-    Pots (offset - (List.length addStart), List.rev fPots)
+    Pots (offset - (List.length addStart) + 2, List.rev fPots)
 
 let sumPots  (Pots (offset, pots)) = 
-    pots |> List.mapi (fun i has -> if has then (i - offset) else 0) |> List.sum
+    let sumParts = pots |> List.mapi (fun i has -> if has then
+                                                      //printfn "Sumpart %d" (i + offset)
+                                                      (i + offset)
+                                                      else 0)
+    //printfn "%A" sumParts
+    let sum = sumParts |> List.sum
+    //printfn "Sum %d" sum
+    sum
 
-let show (Pots(offset, pots)) =
+let show (Pots(offset, pots) as ppots) =
     let row = pots |> List.map (fun p -> if p then "#" else ".") |> String.concat ""
-    let count = pots |> List.mapi (fun i has -> if has then i else 0) |> List.sum
-    sprintf "(%d) %s" count row
+    let count = sumPots ppots 
+    sprintf "(%d) %s [%d]" count row offset
 
 let showGenerations pots producers n =
     let acc (Pots(offset, pots) as ppots) i = 
         let result = evolve ppots producers
-        if (i < 20L) then
+        if (i <= 20L) then
             printfn "[%d] %s" i (show ppots)
         else ()
         result
@@ -79,7 +86,9 @@ let runDay file =
     printfn "Running Day %d" 11
     let testState = "initial state: #..#.#..##......###...###"
     let (initial, producers) = (readFile file)
-    showGenerations initial producers 3L |> ignore
-    let p = showGenerations initial producers 50000000000L 
-    printfn "%s" (show p)
+    let p = showGenerations initial producers 20L 
+    //let p = showGenerations initial producers 50000000000L 
+    //printfn "%s" (show p)
+    ()
+  
 
