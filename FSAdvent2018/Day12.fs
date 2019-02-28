@@ -69,24 +69,30 @@ let sumPots  (Pots (offset, pots)) =
     sum
 
 let show (Pots(offset, pots) as ppots) =
-    let row = pots |> List.map (fun p -> if p then "#" else ".") |> String.concat ""
+    //let row = pots |> List.map (fun p -> if p then "#" else ".") |> String.concat ""
     let count = sumPots ppots 
-    sprintf "(%d) %s [%d]" count row offset
+    //sprintf "(%d) %s [%d]" count row offset
+    sprintf "(%d)" count
 
 let showGenerations pots producers n =
-    let acc (Pots(offset, pots) as ppots) i = 
-        let result = evolve ppots producers
-        if (i <= 20L) then
-            printfn "[%d] %s" i (show ppots)
-        else ()
-        result
-    [0L..n] |> List.fold acc pots
+    let acc (Pots(offset, pots) as ppots, seen) i = 
+        let (Pots(o, p) as result) = evolve ppots producers
+        //if (i <= 20L) then
+        printfn "[%d] %s" i (show ppots)
+        //else ()
+        let count = sumPots result
+        if (Map.containsKey count seen) then
+            printfn "Repetition of %d at %d <-> %d" count (Map.find count seen) i
+            else
+            (Map.add count i |> ignore)
+        (result, seen)
+    [0L..n] |> List.fold acc (pots, Map.empty)
 
 let runDay file = 
     printfn "Running Day %d" 11
     let testState = "initial state: #..#.#..##......###...###"
     let (initial, producers) = (readFile file)
-    let p = showGenerations initial producers 20L 
+    let p = showGenerations initial producers 200000L 
     //let p = showGenerations initial producers 50000000000L 
     //printfn "%s" (show p)
     ()
