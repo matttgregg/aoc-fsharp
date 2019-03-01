@@ -1,6 +1,6 @@
 ﻿// Learn more about F# at http://fsharp.org
 
-open FSAdvent2018.Day12
+open FSAdvent2018.Day9b
 
 [<EntryPoint>]
 let main argv =

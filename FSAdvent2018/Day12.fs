@@ -69,7 +69,7 @@ let show (Pots(offset, pots)) =
 let showGenerations pots producers n =
     let acc (Pots(offset, pots) as ppots) i = 
         let result = evolve ppots producers
-        if (i < 20L) then
+        if (i < 50L) then
             printfn "[%d] %s" i (show ppots)
         else ()
         result
@@ -79,7 +79,7 @@ let runDay file =
     printfn "Running Day %d" 11
     let testState = "initial state: #..#.#..##......###...###"
     let (initial, producers) = (readFile file)
-    showGenerations initial producers 3L |> ignore
-    let p = showGenerations initial producers 50000000000L 
-    printfn "%s" (show p)
+    showGenerations initial producers 20L |> ignore
+    //let p = showGenerations initial producers 50000000000L 
+    //printfn "%s" (show p)
 
