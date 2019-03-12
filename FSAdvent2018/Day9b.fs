@@ -87,6 +87,9 @@ let quickGame players final =
         final 
         (maxScore finalGame)
         "" //(finalGame.Scores |> Array.map string |> String.concat " ")
+type GameBuilder () =
+    member return x 
+    member this.Bind (func, comp) =  
 
 let runDay _ =
     let players = 9
